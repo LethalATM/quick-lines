@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", () => {
 let shows = JSON.parse(localStorage.getItem("quickLinesShows")) || [];
 let activeShowIndex = null;
 let filterType = "all";
@@ -220,3 +221,4 @@ function render() {
 
 document.getElementById("addShowBtn").onclick = addShow;
 render();
+});
