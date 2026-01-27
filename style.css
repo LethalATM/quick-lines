@@ -1,0 +1,70 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0f0f12;
+  color: white;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+input, select {
+  padding: 12px;
+  width: 100%;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+}
+
+button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 4px 4px 4px 0;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#showTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+#showTabs button {
+  background: #2a2a2e;
+  color: white;
+}
+
+.show {
+  background: #1a1a1f;
+  padding: 16px;
+  border-radius: 16px;
+  margin-top: 10px;
+}
+
+.line {
+  background: #242429;
+  padding: 8px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.line span {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.line button {
+  font-size: 12px;
+  background: #3a3a40;
+  color: white;
+}
