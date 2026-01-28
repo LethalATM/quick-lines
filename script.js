@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  // ---------- State ----------
   let shows = JSON.parse(localStorage.getItem("quickLinesShows")) || [];
   let currentShow = null;
 
+  // ---------- Utilities ----------
   function save() {
     localStorage.setItem("quickLinesShows", JSON.stringify(shows));
   }
@@ -11,6 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return [...new Set(show.lines.map(l => l.character).filter(Boolean))];
   }
 
+  function splitLineIntoChunks(text) {
+    // Split on natural pauses: comma, semicolon, period, !, ?
+    return text
+      .split(/[,.;!?]/)
+      .map(t => t.trim())
+      .filter(t => t.length > 0);
+  }
+
+  // ---------- Render ----------
   function render() {
     const tabs = document.getElementById("showTabs");
     const editor = document.getElementById("editor");
@@ -18,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const title = document.getElementById("currentShowTitle");
     const charSelect = document.getElementById("practiceCharacter");
 
+    // Render show tabs
     tabs.innerHTML = "";
     shows.forEach((show, index) => {
       const btn = document.createElement("button");
@@ -38,13 +50,15 @@ document.addEventListener("DOMContentLoaded", () => {
     editor.style.display = "block";
     title.textContent = show.name;
 
+    // Render lines
     linesDiv.innerHTML = "";
     show.lines.forEach(line => {
       const div = document.createElement("div");
-      div.textContent = `${line.character}: ${line.text}`;
+      div.textContent = line.character + ": " + line.text;
       linesDiv.appendChild(div);
     });
 
+    // Populate practice character dropdown
     charSelect.innerHTML = "";
     getCharacters(show).forEach(char => {
       const opt = document.createElement("option");
@@ -54,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ---------- Actions ----------
   function addShow() {
     const input = document.getElementById("showInput");
     if (!input.value.trim()) return;
@@ -64,14 +79,19 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   }
 
-  function addLine() {
+  function addLine(chunks = null) {
     if (currentShow === null) return;
 
     const character = document.getElementById("characterInput").value.trim();
     const text = document.getElementById("lineInput").value.trim();
     if (!character || !text) return;
 
-    shows[currentShow].lines.push({ character, text });
+    shows[currentShow].lines.push({
+      character,
+      text,
+      chunks
+    });
+
     document.getElementById("characterInput").value = "";
     document.getElementById("lineInput").value = "";
 
@@ -79,6 +99,14 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   }
 
+  function splitAndAddLine() {
+    const text = document.getElementById("lineInput").value.trim();
+    if (!text) return;
+    const chunks = splitLineIntoChunks(text);
+    addLine(chunks);
+  }
+
+  // ---------- Practice Mode ----------
   function startPractice() {
     const myCharacter = document.getElementById("practiceCharacter").value;
     const overlay = document.getElementById("practiceOverlay");
@@ -93,13 +121,26 @@ document.addEventListener("DOMContentLoaded", () => {
       const div = document.createElement("div");
 
       if (line.character === myCharacter) {
-        div.textContent = "⬛⬛⬛ YOUR LINE ⬛⬛⬛";
         div.className = "my-line";
-        div.onclick = () => {
-          div.textContent = `${line.character}: ${line.text}`;
-        };
+
+        if (line.chunks && line.chunks.length) {
+          let index = 0;
+          div.textContent = "⬛⬛⬛ YOUR LINE ⬛⬛⬛";
+          div.onclick = () => {
+            if (index < line.chunks.length) {
+              div.textContent = line.chunks[index];
+              index++;
+            }
+          };
+        } else {
+          div.textContent = "⬛⬛⬛ YOUR LINE ⬛⬛⬛";
+          div.onclick = () => {
+            div.textContent = line.character + ": " + line.text;
+          };
+        }
+
       } else {
-        div.textContent = `${line.character}: ${line.text}`;
+        div.textContent = line.character + ": " + line.text;
         div.className = "cue-line";
       }
 
@@ -112,10 +153,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("practiceOverlay").classList.add("hidden");
   }
 
+  // ---------- Event Wiring ----------
   document.getElementById("addShowBtn").onclick = addShow;
   document.getElementById("addLineBtn").onclick = addLine;
+  document.getElementById("splitLineBtn").onclick = splitAndAddLine;
   document.getElementById("practiceBtn").onclick = startPractice;
   document.getElementById("exitPracticeBtn").onclick = exitPractice;
 
+  // ---------- Init ----------
   render();
+
 });
