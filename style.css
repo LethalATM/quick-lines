@@ -18,7 +18,7 @@ h1 {
 }
 
 /* ---------- Inputs & Buttons ---------- */
-input, select, button {
+input, select, textarea, button {
   font-size: 16px;
   padding: 8px;
   margin: 4px 0;
@@ -65,7 +65,7 @@ button:hover {
   border-bottom: 1px solid #eee;
 }
 
-/* ---------- PRACTICE OVERLAY (FULLSCREEN) ---------- */
+/* ---------- Fullscreen Practice Overlay ---------- */
 #practiceOverlay {
   position: fixed;
   inset: 0;
@@ -85,6 +85,7 @@ button:hover {
 #exitPracticeBtn {
   background: #ef4444;
   margin-bottom: 12px;
+  width: 100%;
 }
 
 /* ---------- Practice Lines ---------- */
