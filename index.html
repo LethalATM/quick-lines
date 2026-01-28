@@ -3,25 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <title>Quick Lines</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#e63946" />
-
-  <!-- PWA -->
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-<link rel="stylesheet" href="style.css" />
-<script src="script.js"></script>
 <body>
+
   <h1>🎭 Quick Lines</h1>
 
-  <section>
-    <input id="showTitle" placeholder="New show name" />
+  <!-- Add Show -->
+  <div>
+    <input id="showInput" placeholder="Show name">
     <button id="addShowBtn">Add Show</button>
-  </section>
+  </div>
 
-    <div id="showTabs"></div>
-  <section id="shows"></section>
+  <!-- Show Tabs -->
+  <div id="showTabs"></div>
+
+  <!-- Line Editor -->
+  <div id="editor" style="display:none;">
+    <h2 id="currentShowTitle"></h2>
+
+    <input id="characterInput" placeholder="Character">
+    <input id="lineInput" placeholder="Line">
+    <button id="addLineBtn">Add Line</button>
+
+    <div id="lines"></div>
+
+    <hr>
+
+    <!-- Practice Mode -->
+    <h3>Practice Mode</h3>
+    <select id="practiceCharacter"></select>
+    <button id="practiceBtn">Start Practice</button>
+
+    <div id="practiceArea"></div>
+  </div>
 
   <script src="script.js"></script>
 </body>
