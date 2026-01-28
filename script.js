@@ -1,4 +1,3 @@
-alert("script.js loaded");
 document.addEventListener("DOMContentLoaded", () => {
 let shows = JSON.parse(localStorage.getItem("quickLinesShows")) || [];
 let activeShowIndex = null;
