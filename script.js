@@ -1,64 +1,80 @@
 document.addEventListener("DOMContentLoaded", () => {
+
 let shows = JSON.parse(localStorage.getItem("quickLinesShows")) || [];
-let activeShowIndex = null;
-let filterType = "all";
+let currentShow = null;
 
-let streak = JSON.parse(localStorage.getItem("quickLinesStreak")) || {
-  count: 0,
-  lastDate: null
-};
-
+// ---------- Utilities ----------
 function save() {
   localStorage.setItem("quickLinesShows", JSON.stringify(shows));
-  localStorage.setItem("quickLinesStreak", JSON.stringify(streak));
 }
 
-/* ===== STREAK ===== */
+function getCharacters(show) {
+  return [...new Set(show.lines.map(l => l.character).filter(Boolean))];
+}
 
-function updateStreak() {
-  const today = new Date().toDateString();
-  if (streak.lastDate === today) return;
+// ---------- Render ----------
+function render() {
+  const tabs = document.getElementById("showTabs");
+  const editor = document.getElementById("editor");
+  const linesDiv = document.getElementById("lines");
+  const title = document.getElementById("currentShowTitle");
+  const charSelect = document.getElementById("practiceCharacter");
 
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+  tabs.innerHTML = "";
+  shows.forEach((show, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = show.name;
+    btn.onclick = () => {
+      currentShow = index;
+      render();
+    };
+    tabs.appendChild(btn);
+  });
 
-  if (streak.lastDate === yesterday.toDateString()) {
-    streak.count++;
-  } else {
-    streak.count = 1;
+  if (currentShow === null) {
+    editor.style.display = "none";
+    return;
   }
 
-  streak.lastDate = today;
-  save();
+  const show = shows[currentShow];
+  editor.style.display = "block";
+  title.textContent = show.name;
+
+  // Lines
+  linesDiv.innerHTML = "";
+  show.lines.forEach((line, lIndex) => {
+    const div = document.createElement("div");
+    div.textContent = `${line.character}: ${line.text}`;
+    linesDiv.appendChild(div);
+  });
+
+  // Practice character dropdown
+  charSelect.innerHTML = "";
+  getCharacters(show).forEach(char => {
+    const opt = document.createElement("option");
+    opt.value = char;
+    opt.textContent = char;
+    charSelect.appendChild(opt);
+  });
 }
 
-/* ===== SHOWS ===== */
-
+// ---------- Actions ----------
 function addShow() {
-  const input = document.getElementById("showTitle");
-  if (!input.value.trim()) return;
+  const input = document.getElementById("showInput");
+  const name = input.value.trim();
+  if (!name) return;
 
-  shows.push({ title: input.value, lines: [] });
+  shows.push({ name, lines: [] });
   input.value = "";
-  activeShowIndex = shows.length - 1;
   save();
   render();
 }
-
-function removeShow(index) {
-  if (!confirm("Delete this show?")) return;
-  shows.splice(index, 1);
-  activeShowIndex = Math.max(0, shows.length - 1);
-  save();
-  render();
-}
-
-/* ===== LINES ===== */
 
 function addLine() {
+  if (currentShow === null) return;
+
   const character = document.getElementById("characterInput").value.trim();
   const text = document.getElementById("lineInput").value.trim();
-
   if (!character || !text) return;
 
   shows[currentShow].lines.push({
@@ -75,153 +91,37 @@ function addLine() {
   render();
 }
 
-function removeLine(s, l) {
-  shows[s].lines.splice(l, 1);
-  save();
-  render();
-}
+function startPractice() {
+  const myCharacter = document.getElementById("practiceCharacter").value;
+  const area = document.getElementById("practiceArea");
+  const show = shows[currentShow];
 
-function toggleLine(s, l) {
-  shows[s].lines[l].memorized = !shows[s].lines[l].memorized;
-  save();
-  render();
-}
+  area.innerHTML = "";
 
-function toggleHidden(s, l) {
-  shows[s].lines[l].hidden = !shows[s].lines[l].hidden;
-  save();
-  render();
-}
+  show.lines.forEach(line => {
+    const div = document.createElement("div");
 
-/* ===== PRACTICE ===== */
+    if (line.character === myCharacter) {
+      div.textContent = "⬛⬛⬛ YOUR LINE ⬛⬛⬛";
+      div.className = "my-line";
+      div.onclick = () => {
+        div.textContent = `${line.character}: ${line.text}`;
+      };
+    } else {
+      div.textContent = `${line.character}: ${line.text}`;
+      div.className = "cue-line";
+    }
 
-function startTimedPractice() {
-  updateStreak();
-
-  const seconds = parseInt(document.getElementById("practiceSeconds").value);
-  if (!seconds) return;
-
-  const show = shows[activeShowIndex];
-  show.lines.forEach(l => l.hidden = true);
-  save();
-  render();
-
-  show.lines.forEach((l, i) => {
-    setTimeout(() => {
-      l.hidden = false;
-      save();
-      render();
-    }, seconds * 1000 * (i + 1));
+    area.appendChild(div);
   });
 }
 
-/* ===== RENDER ===== */
-
-function render() {
-  const tabs = document.getElementById("showTabs");
-  const container = document.getElementById("shows");
-  tabs.innerHTML = "";
-  container.innerHTML = "";
-
-  if (activeShowIndex === null && shows.length > 0) activeShowIndex = 0;
-  if (shows.length === 0) return;
-
-  shows.forEach((show, i) => {
-    const tab = document.createElement("button");
-    tab.textContent = show.title;
-    if (i === activeShowIndex) tab.style.background = "#e63946";
-    tab.onclick = () => { activeShowIndex = i; render(); };
-    tabs.appendChild(tab);
-  });
-
-  const show = shows[activeShowIndex];
-  const div = document.createElement("div");
-  div.className = "show";
-
-  const title = document.createElement("h2");
-  title.textContent = show.title;
-
-  const progress = document.createElement("p");
-  const mem = show.lines.filter(l => l.memorized).length;
-  progress.textContent = `Progress: ${mem}/${show.lines.length}`;
-
-  const streakDisplay = document.createElement("p");
-  streakDisplay.textContent = `🔥 Practice Streak: ${streak.count} day${streak.count === 1 ? "" : "s"}`;
-
-  const practiceInput = document.createElement("input");
-  practiceInput.id = "practiceSeconds";
-  practiceInput.type = "number";
-  practiceInput.placeholder = "Seconds per line";
-
-  const practiceBtn = document.createElement("button");
-  practiceBtn.textContent = "🎧 Timed Practice";
-  practiceBtn.onclick = startTimedPractice;
-
-  const typeSelect = document.createElement("select");
-  typeSelect.id = "lineType";
-  typeSelect.innerHTML = `
-    <option value="lyric">🎶 Lyric</option>
-    <option value="dialogue">🎭 Dialogue</option>
-  `;
-
-  const filterDiv = document.createElement("div");
-  ["all","lyric","dialogue"].forEach(t => {
-    const b = document.createElement("button");
-    b.textContent = t === "all" ? "All" : t === "lyric" ? "🎶 Lyrics" : "🎭 Dialogue";
-    b.onclick = () => { filterType = t; render(); };
-    filterDiv.appendChild(b);
-  });
-
-  const lineInput = document.createElement("input");
-  lineInput.id = "lineInput";
-  lineInput.placeholder = "Add a line";
-
-  const addLineBtn = document.createElement("button");
-  addLineBtn.textContent = "Add Line";
-  addLineBtn.onclick = () => addLine(activeShowIndex);
-
-  div.append(
-    title,
-    progress,
-    streakDisplay,
-    practiceInput,
-    practiceBtn,
-    filterDiv,
-    typeSelect,
-    lineInput,
-    addLineBtn
-  );
-
-  show.lines.forEach((line, i) => {
-    if (filterType !== "all" && line.type !== filterType) return;
-
-    const lineDiv = document.createElement("div");
-    lineDiv.className = "line";
-
-    const text = document.createElement("span");
-    text.textContent =
-      `${line.memorized ? "✅" : "⬜"} ${line.type === "lyric" ? "🎶" : "🎭"} ` +
-      `${line.hidden ? "••••••••••" : line.text}`;
-
-    const memBtn = document.createElement("button");
-    memBtn.textContent = "Memorized";
-    memBtn.onclick = () => toggleLine(activeShowIndex, i);
-
-    const hideBtn = document.createElement("button");
-    hideBtn.textContent = line.hidden ? "Reveal" : "Hide";
-    hideBtn.onclick = () => toggleHidden(activeShowIndex, i);
-
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Remove";
-    delBtn.onclick = () => removeLine(activeShowIndex, i);
-
-    lineDiv.append(text, memBtn, hideBtn, delBtn);
-    div.appendChild(lineDiv);
-  });
-
-  container.appendChild(div);
-}
-
+// ---------- Event Wiring ----------
 document.getElementById("addShowBtn").onclick = addShow;
+document.getElementById("addLineBtn").onclick = addLine;
+document.getElementById("practiceBtn").onclick = startPractice;
+
+// ---------- Init ----------
 render();
+
 });
