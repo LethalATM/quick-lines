@@ -31,13 +31,32 @@ document.addEventListener("DOMContentLoaded", () => {
     // Show tabs
     tabs.innerHTML = "";
     shows.forEach((show, index) => {
+      const tab = document.createElement("div");
+      tab.className = "tab-wrapper";
+
       const btn = document.createElement("button");
       btn.textContent = show.name;
       btn.onclick = () => {
         currentShow = index;
         render();
       };
-      tabs.appendChild(btn);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "×";
+      deleteBtn.className = "delete-btn";
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (confirm(`Delete show "${show.name}"?`)) {
+          shows.splice(index, 1);
+          if (currentShow === index) currentShow = null;
+          save();
+          render();
+        }
+      };
+
+      tab.appendChild(btn);
+      tab.appendChild(deleteBtn);
+      tabs.appendChild(tab);
     });
 
     if (currentShow === null) {
@@ -49,12 +68,29 @@ document.addEventListener("DOMContentLoaded", () => {
     editor.style.display = "block";
     title.textContent = show.name;
 
-    // Render lines
+    // Render lines with delete buttons
     linesDiv.innerHTML = "";
-    show.lines.forEach(line => {
-      const div = document.createElement("div");
-      div.textContent = line.character + ": " + line.text;
-      linesDiv.appendChild(div);
+    show.lines.forEach((line, lineIndex) => {
+      const lineDiv = document.createElement("div");
+      lineDiv.className = "line-item";
+
+      const text = document.createElement("span");
+      text.textContent = line.character + ": " + line.text;
+      lineDiv.appendChild(text);
+
+      const deleteLineBtn = document.createElement("button");
+      deleteLineBtn.textContent = "Delete";
+      deleteLineBtn.className = "delete-btn";
+      deleteLineBtn.onclick = () => {
+        if (confirm(`Delete line for "${line.character}"?`)) {
+          shows[currentShow].lines.splice(lineIndex, 1);
+          save();
+          render();
+        }
+      };
+
+      lineDiv.appendChild(deleteLineBtn);
+      linesDiv.appendChild(lineDiv);
     });
 
     // Practice dropdown
