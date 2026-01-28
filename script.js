@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function splitLineIntoChunks(text) {
-    // Split on natural pauses: comma, semicolon, period, !, ?
     return text
       .split(/[,.;!?]/)
       .map(t => t.trim())
@@ -29,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const title = document.getElementById("currentShowTitle");
     const charSelect = document.getElementById("practiceCharacter");
 
-    // Render show tabs
+    // Show tabs
     tabs.innerHTML = "";
     shows.forEach((show, index) => {
       const btn = document.createElement("button");
@@ -58,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
       linesDiv.appendChild(div);
     });
 
-    // Populate practice character dropdown
+    // Practice dropdown
     charSelect.innerHTML = "";
     getCharacters(show).forEach(char => {
       const opt = document.createElement("option");
@@ -72,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function addShow() {
     const input = document.getElementById("showInput");
     if (!input.value.trim()) return;
-
     shows.push({ name: input.value.trim(), lines: [] });
     input.value = "";
     save();
@@ -81,16 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function addLine(chunks = null) {
     if (currentShow === null) return;
-
     const character = document.getElementById("characterInput").value.trim();
     const text = document.getElementById("lineInput").value.trim();
     if (!character || !text) return;
 
-    shows[currentShow].lines.push({
-      character,
-      text,
-      chunks
-    });
+    shows[currentShow].lines.push({ character, text, chunks });
 
     document.getElementById("characterInput").value = "";
     document.getElementById("lineInput").value = "";
