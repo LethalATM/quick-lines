@@ -23,10 +23,11 @@
   <div id="editor" style="display:none;">
     <h2 id="currentShowTitle"></h2>
 
-    <!-- Add Line -->
+    <!-- Add Line / Monologue -->
     <input id="characterInput" placeholder="Character">
-    <input id="lineInput" placeholder="Line">
+    <textarea id="lineInput" placeholder="Line or monologue" rows="3"></textarea>
     <button id="addLineBtn">Add Line</button>
+    <button id="splitLineBtn">Split for Memorizing</button>
 
     <!-- Lines List -->
     <div id="lines"></div>
@@ -39,7 +40,7 @@
     <button id="practiceBtn">Start Practice</button>
   </div>
 
-  <!-- ✅ FULLSCREEN PRACTICE OVERLAY -->
+  <!-- Fullscreen Practice Overlay -->
   <div id="practiceOverlay" class="hidden">
     <button id="exitPracticeBtn">Exit Practice</button>
     <div id="practiceArea"></div>
