@@ -118,3 +118,25 @@ button:disabled {
     width: 100%;
   }
 }
+/* ---------- Fullscreen Practice Mode ---------- */
+#practiceOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  color: white;
+  padding: 16px;
+  overflow-y: auto;
+  z-index: 9999;
+}
+
+#practiceOverlay.hidden {
+  display: none;
+}
+
+#exitPracticeBtn {
+  background: #ef4444;
+  margin-bottom: 12px;
+}
