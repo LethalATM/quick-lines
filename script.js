@@ -55,19 +55,22 @@ function removeShow(index) {
 
 /* ===== LINES ===== */
 
-function addLine(showIndex) {
-  const input = document.getElementById("lineInput");
-  const type = document.getElementById("lineType").value;
-  if (!input.value.trim()) return;
+function addLine() {
+  const character = document.getElementById("characterInput").value.trim();
+  const text = document.getElementById("lineInput").value.trim();
 
-  shows[showIndex].lines.push({
-    text: input.value,
+  if (!character || !text) return;
+
+  shows[currentShow].lines.push({
+    character,
+    text,
     memorized: false,
-    hidden: false,
-    type
+    hidden: false
   });
 
-  input.value = "";
+  document.getElementById("characterInput").value = "";
+  document.getElementById("lineInput").value = "";
+
   save();
   render();
 }
