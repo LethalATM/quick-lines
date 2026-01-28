@@ -46,9 +46,29 @@ button:hover {
   overflow-x: auto;
 }
 
-#showTabs button {
+.tab-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-wrapper button {
   background: #e5e7eb;
   color: #111;
+}
+
+/* ---------- Delete Buttons ---------- */
+.delete-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #b91c1c;
 }
 
 /* ---------- Editor ---------- */
@@ -60,9 +80,11 @@ button:hover {
 }
 
 /* ---------- Lines ---------- */
-#lines div {
-  padding: 6px;
-  border-bottom: 1px solid #eee;
+.line-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
 }
 
 /* ---------- Fullscreen Practice Overlay ---------- */
