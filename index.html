@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Quick Lines</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -19,27 +19,30 @@
   <!-- Show Tabs -->
   <div id="showTabs"></div>
 
-  <!-- Line Editor -->
+  <!-- Editor -->
   <div id="editor" style="display:none;">
     <h2 id="currentShowTitle"></h2>
 
+    <!-- Add Line -->
     <input id="characterInput" placeholder="Character">
     <input id="lineInput" placeholder="Line">
     <button id="addLineBtn">Add Line</button>
 
+    <!-- Lines List -->
     <div id="lines"></div>
 
     <hr>
 
-    <!-- Practice Mode -->
+    <!-- Practice Controls -->
     <h3>Practice Mode</h3>
     <select id="practiceCharacter"></select>
     <button id="practiceBtn">Start Practice</button>
+  </div>
 
-    <div id="practiceOverlay" class="hidden">
-  <button id="exitPracticeBtn">Exit Practice</button>
-  <div id="practiceArea"></div>
-</div>
+  <!-- ✅ FULLSCREEN PRACTICE OVERLAY -->
+  <div id="practiceOverlay" class="hidden">
+    <button id="exitPracticeBtn">Exit Practice</button>
+    <div id="practiceArea"></div>
   </div>
 
   <script src="script.js"></script>
