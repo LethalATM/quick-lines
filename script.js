@@ -1,10 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ---------- State ----------
   let shows = JSON.parse(localStorage.getItem("quickLinesShows")) || [];
   let currentShow = null;
 
-  // ---------- Utilities ----------
   function save() {
     localStorage.setItem("quickLinesShows", JSON.stringify(shows));
   }
@@ -13,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return [...new Set(show.lines.map(l => l.character).filter(Boolean))];
   }
 
-  // ---------- Render ----------
   function render() {
     const tabs = document.getElementById("showTabs");
     const editor = document.getElementById("editor");
@@ -21,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const title = document.getElementById("currentShowTitle");
     const charSelect = document.getElementById("practiceCharacter");
 
-    // Render show tabs
     tabs.innerHTML = "";
     shows.forEach((show, index) => {
       const btn = document.createElement("button");
@@ -33,18 +29,15 @@ document.addEventListener("DOMContentLoaded", () => {
       tabs.appendChild(btn);
     });
 
-    // No show selected
     if (currentShow === null) {
       editor.style.display = "none";
       return;
     }
 
-    // Show editor
     const show = shows[currentShow];
     editor.style.display = "block";
     title.textContent = show.name;
 
-    // Render lines
     linesDiv.innerHTML = "";
     show.lines.forEach(line => {
       const div = document.createElement("div");
@@ -52,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
       linesDiv.appendChild(div);
     });
 
-    // Practice character dropdown
     charSelect.innerHTML = "";
     getCharacters(show).forEach(char => {
       const opt = document.createElement("option");
@@ -62,13 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---------- Actions ----------
   function addShow() {
     const input = document.getElementById("showInput");
-    const name = input.value.trim();
-    if (!name) return;
+    if (!input.value.trim()) return;
 
-    shows.push({ name, lines: [] });
+    shows.push({ name: input.value.trim(), lines: [] });
     input.value = "";
     save();
     render();
@@ -81,13 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = document.getElementById("lineInput").value.trim();
     if (!character || !text) return;
 
-    shows[currentShow].lines.push({
-      character,
-      text,
-      memorized: false,
-      hidden: false
-    });
-
+    shows[currentShow].lines.push({ character, text });
     document.getElementById("characterInput").value = "";
     document.getElementById("lineInput").value = "";
 
@@ -95,13 +79,13 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   }
 
-  // ---------- Practice Mode ----------
   function startPractice() {
     const myCharacter = document.getElementById("practiceCharacter").value;
     const overlay = document.getElementById("practiceOverlay");
     const area = document.getElementById("practiceArea");
     const show = shows[currentShow];
 
+    document.body.style.overflow = "hidden";
     overlay.classList.remove("hidden");
     area.innerHTML = "";
 
@@ -124,16 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function exitPractice() {
+    document.body.style.overflow = "auto";
     document.getElementById("practiceOverlay").classList.add("hidden");
   }
 
-  // ---------- Event Wiring ----------
   document.getElementById("addShowBtn").onclick = addShow;
   document.getElementById("addLineBtn").onclick = addLine;
   document.getElementById("practiceBtn").onclick = startPractice;
   document.getElementById("exitPracticeBtn").onclick = exitPractice;
 
-  // ---------- Init ----------
   render();
-
 });
