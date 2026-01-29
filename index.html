@@ -1,62 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+
   <title>Quick Lines</title>
 
-  <!-- Viewport & Mobile App -->
+  <!-- Mobile / iPad support -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Quick Lines">
 
-  <!-- Favicon & Home Screen Icon -->
+  <!-- App Icons -->
   <link rel="icon" href="icon.png">
   <link rel="apple-touch-icon" href="icon.png">
-  <!-- Optional splash screen -->
-  <link rel="apple-touch-startup-image" href="splash.png">
 
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <h1>🎭 Quick Lines</h1>
+  <!-- App Header with FULL logo -->
+  <header class="app-header">
+    <img src="logo.png" alt="Quick Lines Logo" class="app-logo">
+  </header>
 
   <!-- Add Show -->
-  <div>
+  <section class="add-show">
     <input id="showInput" placeholder="Show name">
     <button id="addShowBtn">Add Show</button>
-  </div>
+  </section>
 
   <!-- Show Tabs -->
   <div id="showTabs"></div>
 
   <!-- Editor -->
-  <div id="editor" style="display:none;">
+  <section id="editor" style="display:none;">
     <h2 id="currentShowTitle"></h2>
 
-    <!-- Add Line / Monologue -->
-    <input id="characterInput" placeholder="Character">
+    <input id="characterInput" placeholder="Character name">
     <textarea id="lineInput" placeholder="Line or monologue" rows="3"></textarea>
+
     <button id="addLineBtn">Add Line</button>
     <button id="splitLineBtn">Split for Memorizing</button>
 
-    <!-- Lines List -->
     <div id="lines"></div>
 
     <hr>
 
-    <!-- Practice Controls -->
     <h3>Practice Mode</h3>
     <select id="practiceCharacter"></select>
     <button id="practiceBtn">Start Practice</button>
-  </div>
+  </section>
 
-  <!-- Fullscreen Practice Overlay -->
+  <!-- Fullscreen Practice -->
   <div id="practiceOverlay" class="hidden">
     <button id="exitPracticeBtn">Exit Practice</button>
     <div id="practiceArea"></div>
   </div>
 
+  <!-- Logic -->
   <script src="script.js"></script>
 </body>
 </html>
